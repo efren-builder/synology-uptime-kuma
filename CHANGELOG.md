@@ -30,7 +30,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Data persistence across package upgrades (automatic backup and restore)
 - Multi-language Package Center descriptions (English, French, German, Spanish, Japanese, Chinese Simplified)
 - Localized installation wizards (English, French, German, Spanish)
-- Node.js_v22 dependency (auto-installed via Package Center)
+- Bundled Node.js 22 runtime (no external Node.js dependency required)
 - Disk space validation during installation (500 MB minimum)
 - Node.js availability checks at install and startup
 - Structured logging with timestamps

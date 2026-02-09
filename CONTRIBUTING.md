@@ -50,7 +50,6 @@ Thank you for your interest in contributing to the Uptime Kuma SPK package for S
 ├── icons/                   # SVG source icon
 ├── scripts/                 # Utility scripts (icon generation)
 ├── screenshots/             # Package Center screenshots
-├── research/                # Design research and analysis documents
 ├── Makefile                 # Top-level build entry point
 └── PLIST                    # Package file listing
 ```
@@ -112,7 +111,7 @@ Before submitting a pull request, verify:
 4. **Service lifecycle:** Start, stop, and restart work correctly via Package Center
 5. **Web UI accessible:** The Uptime Kuma web interface loads after installation
 
-See [TESTING.md](TESTING.md) for a comprehensive testing checklist.
+Test on at least one NAS model or Virtual DSM before submitting.
 
 ## Submitting a Pull Request
 

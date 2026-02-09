@@ -16,6 +16,7 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+.icon-original.png
 
 # Internal docs (keep local only)
 SYNOCOMMUNITY_PR.md

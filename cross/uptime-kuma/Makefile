@@ -12,8 +12,9 @@ HOMEPAGE = https://uptime.kuma.pet
 COMMENT  = A self-hosted monitoring tool
 LICENSE  = MIT
 
-# Node.js path from the Synology Node.js_v22 package
-NODE_DIR = /var/packages/Node.js_v22/target/usr/local
+# Node.js path for spksrc build environment
+# For standalone builds, use scripts/build-spk.sh which bundles Node.js
+NODE_DIR = /usr/local
 NODE_BIN = $(NODE_DIR)/bin/node
 NPM_BIN  = $(NODE_DIR)/bin/npm
 
@@ -55,7 +56,7 @@ uptime_kuma_install:
 		cp -a $(WORK_DIR)/$(PKG_DIR)/db/* $(STAGING_INSTALL_PREFIX)/uptime-kuma/db/ 2>/dev/null || true; \
 	fi
 	@# Copy extra directories needed at runtime
-	@for dir in config extra; do \
+	@for dir in config extra src; do \
 		if [ -d "$(WORK_DIR)/$(PKG_DIR)/$$dir" ]; then \
 			cp -a "$(WORK_DIR)/$(PKG_DIR)/$$dir" $(STAGING_INSTALL_PREFIX)/uptime-kuma/$$dir; \
 		fi; \

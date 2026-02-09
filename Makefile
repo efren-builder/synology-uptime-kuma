@@ -1,5 +1,5 @@
 # Top-level Makefile for Uptime Kuma SPK
-# Compatible with SynoCommunity spksrc build system
+# Compatible with spksrc build system
 #
 # Usage:
 #   make setup          - Verify build environment

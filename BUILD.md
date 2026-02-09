@@ -1,6 +1,6 @@
 # Building the Uptime Kuma SPK Package
 
-This document describes how to build the Uptime Kuma SPK package for Synology NAS using the SynoCommunity spksrc build system.
+This document describes how to build the Uptime Kuma SPK package for Synology NAS.
 
 ## Prerequisites
 
@@ -9,9 +9,40 @@ This document describes how to build the Uptime Kuma SPK package for Synology NA
 - **Internet access** for downloading toolchains and source code
 - ~10 GB free disk space for the build environment
 
-## Repository Setup
+## Option A: Standalone Build Script (Recommended)
 
-### Option A: Build within the spksrc tree (recommended)
+The standalone build script handles everything -- downloads Node.js, Uptime Kuma source, and assembles the SPK without needing the full spksrc toolchain.
+
+```bash
+# Build for x86_64 (Intel/AMD NAS -- default)
+./scripts/build-spk.sh
+
+# The .spk file is placed in packages/
+ls packages/*.spk
+```
+
+The script:
+1. Downloads the Uptime Kuma v2.1.0 source tarball and verifies its SHA256 hash
+2. Downloads a glibc 2.17 compatible Node.js 22 binary for the target architecture
+3. Runs `npm ci --omit dev` to install production dependencies
+4. Downloads the pre-built frontend from GitHub Releases
+5. Assembles the SPK archive with scripts, icons, wizard, and configuration
+
+### Changing the target architecture
+
+Edit the `ARCH` variable at the top of `scripts/build-spk.sh`:
+
+| ARCH | Target |
+|------|--------|
+| `x86_64` | Intel/AMD NAS (DS220+, DS920+, etc.) |
+| `aarch64` | ARM64 NAS (DS223, DS224+, etc.) |
+| `armv7` | Older ARM NAS (DS218, DS118, etc.) |
+
+## Option B: Build with spksrc
+
+For integration with the [spksrc](https://github.com/SynoCommunity/spksrc) build system:
+
+### Repository Setup
 
 ```bash
 # Clone the spksrc repository
@@ -19,25 +50,19 @@ git clone https://github.com/SynoCommunity/spksrc.git
 cd spksrc
 
 # Copy the Uptime Kuma package files into the spksrc tree
-cp -r /path/to/uptime-kuma-spk/cross/uptime-kuma cross/
-cp -r /path/to/uptime-kuma-spk/spk/uptime-kuma spk/
+cp -r /path/to/this/repo/cross/uptime-kuma cross/
+cp -r /path/to/this/repo/spk/uptime-kuma spk/
 ```
 
-### Option B: Use as an overlay
-
-Symlink the package directories into an existing spksrc checkout:
+Or use as an overlay (symlinks):
 
 ```bash
 cd /path/to/spksrc
-ln -s /path/to/uptime-kuma-spk/cross/uptime-kuma cross/uptime-kuma
-ln -s /path/to/uptime-kuma-spk/spk/uptime-kuma spk/uptime-kuma
+ln -s /path/to/this/repo/cross/uptime-kuma cross/uptime-kuma
+ln -s /path/to/this/repo/spk/uptime-kuma spk/uptime-kuma
 ```
 
-## Building with Docker (Recommended)
-
-The spksrc project provides a Docker-based build environment that includes all necessary toolchains.
-
-### 1. Set up the Docker environment
+### Building with Docker
 
 ```bash
 cd spksrc
@@ -47,104 +72,56 @@ docker build -t spksrc -f Dockerfile .
 
 # Or pull the pre-built image
 docker pull ghcr.io/synocommunity/spksrc
-```
 
-### 2. Start the build container
-
-```bash
+# Start the build container
 docker run -it -v $(pwd):/spksrc ghcr.io/synocommunity/spksrc /bin/bash
-```
 
-### 3. Build for a specific architecture
-
-Inside the container:
-
-```bash
+# Inside the container:
 cd /spksrc/spk/uptime-kuma
 
-# Build for x86_64 (Intel/AMD NAS)
+# Build for x86_64
 make arch-x64-7.1
 
-# Build for aarch64 (ARM64 NAS, e.g., DS223, DS224+)
-make arch-aarch64-7.1
-
-# Build for armv7 (older ARM NAS, e.g., DS218)
-make arch-armv7-7.1
-```
-
-### 4. Build for all supported architectures
-
-```bash
-cd /spksrc/spk/uptime-kuma
+# Or build for all architectures
 make all-supported
 ```
 
-This builds the SPK for every architecture supported by the package.
-
-## Building without Docker
-
-### 1. Install build dependencies
+### Building without Docker
 
 On Debian/Ubuntu:
 
 ```bash
 sudo apt-get update
 sudo apt-get install -y \
-    build-essential \
-    automake \
-    autoconf \
-    libtool \
-    pkg-config \
-    cmake \
-    git \
-    curl \
-    wget \
-    python3 \
-    bison \
-    flex \
-    gawk \
-    gettext \
-    libssl-dev \
-    zlib1g-dev
-```
+    build-essential automake autoconf libtool pkg-config cmake \
+    git curl wget python3 bison flex gawk gettext libssl-dev zlib1g-dev
 
-### 2. Set up spksrc
-
-```bash
 cd spksrc
 make setup
-```
 
-### 3. Build
-
-```bash
 cd spk/uptime-kuma
 make arch-x64-7.1
 ```
 
 ## Build Output
 
-Built SPK files are placed in the `spksrc/packages/` directory:
+Built SPK files are placed in the `packages/` directory:
 
 ```
 packages/
   uptime-kuma_x86_64-7.1_2.1.0-1.spk
-  uptime-kuma_aarch64-7.1_2.1.0-1.spk
-  uptime-kuma_armv7-7.1_2.1.0-1.spk
 ```
-
-The filename format is: `<name>_<arch>-<dsm>_<version>.spk`
 
 ## Build Process Overview
 
-The build system performs these steps:
+The build performs these steps:
 
 1. **Download** -- Fetches the Uptime Kuma v2.1.0 source tarball from GitHub
 2. **Verify** -- Checks SHA256 hash against `cross/uptime-kuma/digests`
 3. **Extract** -- Unpacks the source into the work directory
-4. **Compile** -- Runs `npm ci --omit dev` to install production Node.js dependencies
-5. **Download dist** -- Fetches the pre-built frontend from GitHub Releases
-6. **Install** -- Copies server, dist, node_modules, and metadata to the staging directory
+4. **Download Node.js** -- Fetches a glibc 2.17 compatible Node.js 22 binary
+5. **Install deps** -- Runs `npm ci --omit dev` to install production Node.js dependencies
+6. **Download dist** -- Fetches the pre-built frontend from GitHub Releases
 7. **Package** -- Assembles the SPK archive with scripts, icons, wizard, and configuration
 
 ## Updating the Digest
@@ -191,21 +168,9 @@ tar -tvf package.tgz | head -50
 
 ### npm ci fails
 
-- Ensure the Docker container has internet access
-- Check that Node.js_v22 paths are correct in the cross Makefile
+- Ensure the build environment has internet access
+- Check that Node.js is available in the build path
 - Try clearing the npm cache: `npm cache clean --force`
-
-### Toolchain download fails
-
-- Verify internet connectivity from the build environment
-- Check the spksrc wiki for known toolchain issues
-- Try `make clean` and rebuild
-
-### Architecture not supported
-
-- Check `UNSUPPORTED_ARCHS` in the SPK Makefile
-- Verify the toolchain exists for the target architecture
-- See the spksrc wiki for supported architecture list
 
 ### Hash mismatch
 
@@ -213,17 +178,13 @@ tar -tvf package.tgz | head -50
 - Recompute the SHA256 hash
 - Update `cross/uptime-kuma/digests` with the correct value
 
-## Cleaning Build Artifacts
+### Cleaning Build Artifacts
 
 ```bash
-# Clean everything
+# Clean standalone build
+rm -rf build/ packages/*.spk
+
+# Clean spksrc build
 cd spksrc/spk/uptime-kuma
-make clean
-
-# Clean only SPK artifacts (keep downloaded sources)
-make spkclean
-
-# Clean the cross-compilation artifacts
-cd spksrc/cross/uptime-kuma
 make clean
 ```

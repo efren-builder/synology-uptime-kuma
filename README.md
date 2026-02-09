@@ -3,7 +3,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Uptime Kuma](https://img.shields.io/badge/Uptime%20Kuma-v2.1.0-brightgreen)](https://github.com/louislam/uptime-kuma)
 [![DSM](https://img.shields.io/badge/DSM-7.0%2B-blue)](https://www.synology.com/dsm)
-[![SynoCommunity](https://img.shields.io/badge/SynoCommunity-spksrc-orange)](https://synocommunity.com)
 
 A native Synology SPK package for [Uptime Kuma](https://github.com/louislam/uptime-kuma), the self-hosted monitoring tool. Install Uptime Kuma directly from Package Center -- no Docker required.
 
@@ -40,25 +39,15 @@ See [screenshots/README.md](screenshots/README.md) for capture guidelines.
 
 ## Installation
 
-### From SynoCommunity Package Center
+### Download
 
-1. Open **Package Center** in DSM
-2. Go to **Settings** > **Package Sources**
-3. Add a new source:
-   - **Name:** `SynoCommunity`
-   - **Location:** `https://packages.synocommunity.com`
-4. Click **OK**, then browse the **Community** tab
-5. Search for **Uptime Kuma** and click **Install**
-6. Follow the installation wizard to configure the service port
-
-### Manual Install
-
-1. Download the `.spk` file for your architecture from the [Releases](https://github.com/SynoCommunity/spksrc/releases) page
-2. Open **Package Center** in DSM
-3. Click **Manual Install** (upper-right corner)
-4. Browse to the downloaded `.spk` file and click **Next**
-5. Follow the installation wizard
-6. Click **Apply** to install
+1. Go to the [Releases](https://github.com/efren-builder/synology-uptime-kuma/releases) page
+2. Download the `.spk` file for your NAS architecture (x86_64 for Intel/AMD)
+3. Open **Package Center** in DSM
+4. Click **Manual Install** (upper-right corner)
+5. Browse to the downloaded `.spk` file and click **Next**
+6. Follow the installation wizard
+7. Click **Apply** to install
 
 ## Configuration
 
@@ -100,7 +89,7 @@ WebSocket headers are required for Uptime Kuma's real-time updates.
 | Requirement | Details |
 |-------------|---------|
 | **DSM Version** | 7.0 or later |
-| **Node.js** | Node.js_v22 (auto-installed as a dependency) |
+| **Node.js** | Bundled in the package (no separate install needed) |
 | **RAM** | 512 MB minimum available (1 GB recommended for 50+ monitors) |
 | **Disk Space** | 500 MB minimum for installation |
 | **Architecture** | x86_64 (Intel/AMD), aarch64 (ARM64), armv7 (ARMv7) |
@@ -117,38 +106,38 @@ WebSocket headers are required for Uptime Kuma's real-time updates.
 
 See [BUILD.md](BUILD.md) for detailed build instructions.
 
-### Quick Start
+### Quick Start (Standalone)
+
+The easiest way to build is with the standalone build script:
 
 ```bash
-# Clone the spksrc repository
+./scripts/build-spk.sh
+```
+
+This downloads all dependencies (including Node.js) and produces a ready-to-install `.spk` file in the `packages/` directory. Requires Docker.
+
+### Quick Start (spksrc)
+
+To build within the [spksrc](https://github.com/SynoCommunity/spksrc) framework:
+
+```bash
 git clone https://github.com/SynoCommunity/spksrc.git
 cd spksrc
 
-# Copy (or symlink) the Uptime Kuma package files
+# Copy the Uptime Kuma package files
 cp -r /path/to/this/repo/cross/uptime-kuma cross/
 cp -r /path/to/this/repo/spk/uptime-kuma spk/
 
 # Build for a specific architecture
 cd spk/uptime-kuma
 make arch-x64-7.1
-
-# Build for all supported architectures
-make all-supported
 ```
-
-Built `.spk` files are placed in `spksrc/packages/`.
 
 ## Upgrading
 
-### Via Package Center
-
-1. When a new version is available, Package Center shows an **Update** notification
-2. Click **Update** and follow the on-screen prompts
-3. Your monitoring data (database, uploads, configuration) is preserved automatically
-
 ### Manual Upgrade
 
-1. Download the new `.spk` file
+1. Download the new `.spk` file from [Releases](https://github.com/efren-builder/synology-uptime-kuma/releases)
 2. Go to **Package Center > Manual Install**
 3. Select the new `.spk` file
 4. The upgrade wizard confirms data will be preserved
@@ -192,7 +181,7 @@ synopkg start uptime-kuma
 
 1. Stop the Uptime Kuma service
 2. Replace the contents of `/var/packages/uptime-kuma/var/` with your backup
-3. Ensure correct ownership: `chown -R sc-uptime-kuma:synocommunity /var/packages/uptime-kuma/var/`
+3. Ensure correct ownership: `chown -R sc-uptime-kuma /var/packages/uptime-kuma/var/`
 4. Start the service
 
 ## Troubleshooting
@@ -205,11 +194,10 @@ cat /var/log/packages/uptime-kuma.log
 cat /var/packages/uptime-kuma/var/uptime-kuma.log
 ```
 
-**Verify Node.js is installed:**
+**Verify the bundled Node.js works:**
 ```bash
-/var/packages/Node.js_v22/target/usr/local/bin/node --version
+/var/packages/uptime-kuma/target/node/bin/node --version
 ```
-If this fails, reinstall the Node.js_v22 package from Package Center.
 
 ### Port conflict
 
@@ -233,7 +221,7 @@ Uptime Kuma relies on WebSocket (Socket.IO) for real-time updates. If you see co
 If you see permission-denied errors in logs:
 ```bash
 # Fix ownership on the data directory
-chown -R sc-uptime-kuma:synocommunity /var/packages/uptime-kuma/var/
+chown -R sc-uptime-kuma /var/packages/uptime-kuma/var/
 chmod 750 /var/packages/uptime-kuma/var/
 ```
 
@@ -265,17 +253,17 @@ If Uptime Kuma uses excessive memory:
 | Install Path | `/var/packages/uptime-kuma/target/` |
 | Data Path | `/var/packages/uptime-kuma/var/` |
 | Log Path | `/var/log/packages/uptime-kuma.log` |
-| Dependencies | Node.js_v22 |
+| Node.js | Bundled (v22, glibc 2.17 compatible) |
 | DSM Minimum | 7.0-40000 |
 
 ## Credits
 
 - **[Uptime Kuma](https://github.com/louislam/uptime-kuma)** by [Louis Lam](https://github.com/louislam) -- the monitoring application
-- **[SynoCommunity](https://synocommunity.com)** -- community package repository and spksrc build system
+- **[spksrc](https://github.com/SynoCommunity/spksrc)** -- community build system for Synology packages
 - **Contributors** -- see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
-This SPK package is released under the [MIT License](LICENSE), matching the Uptime Kuma project license.
+This SPK package is released under the [MIT License](LICENSE).
 
 Uptime Kuma itself is copyright (c) Louis Lam and contributors, released under the MIT License.
