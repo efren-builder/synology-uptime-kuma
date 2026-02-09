@@ -16,3 +16,8 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+
+# Internal docs (keep local only)
+SYNOCOMMUNITY_PR.md
+VALIDATION_REPORT.md
+research/
