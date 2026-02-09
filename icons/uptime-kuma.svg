@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="line-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5cdd8b;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#6ceb72;stop-opacity:1"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5cdd8b;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#6ceb72;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+  <!-- Background rounded rectangle -->
+  <rect x="0" y="0" width="256" height="256" rx="48" ry="48" fill="url(#bg)"/>
+  <!-- Glow area under the line -->
+  <polygon points="32,180 72,170 108,130 128,185 148,80 178,120 210,68 224,90 224,210 32,210"
+           fill="url(#glow)" opacity="0.5"/>
+  <!-- Uptime trend line (heartbeat/chart style) -->
+  <polyline points="32,180 72,170 108,130 128,185 148,80 178,120 210,68 224,90"
+            fill="none"
+            stroke="url(#line-grad)"
+            stroke-width="10"
+            stroke-linecap="round"
+            stroke-linejoin="round"/>
+  <!-- Upward arrow at the end -->
+  <polygon points="224,90 214,108 218,103 218,120 230,120 230,103 234,108"
+           fill="#6ceb72"
+           opacity="0.9"/>
+  <!-- Small dots on key data points -->
+  <circle cx="148" cy="80" r="6" fill="#6ceb72"/>
+  <circle cx="210" cy="68" r="6" fill="#6ceb72"/>
+</svg>

@@ -1,0 +1,18 @@
+# Build artifacts
+build/
+packages/*.spk
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.bak
