@@ -24,19 +24,6 @@ Uptime Kuma is a full-featured, self-hosted monitoring solution:
 - **Prometheus Metrics** -- `/metrics` endpoint for Grafana integration
 - **Dynamic Badges** -- SVG badges for README files and dashboards (shields.io compatible)
 
-## Screenshots
-
-<!-- Replace these placeholders with actual screenshots -->
-| Dashboard | Status Page |
-|:---------:|:-----------:|
-| ![Dashboard](screenshots/dashboard.png) | ![Status Page](screenshots/status-page.png) |
-
-| Monitor Config | Notifications |
-|:--------------:|:-------------:|
-| ![Monitor Config](screenshots/monitor-config.png) | ![Notifications](screenshots/notifications.png) |
-
-See [screenshots/README.md](screenshots/README.md) for capture guidelines.
-
 ## Installation
 
 ### Download
@@ -125,8 +112,8 @@ git clone https://github.com/SynoCommunity/spksrc.git
 cd spksrc
 
 # Copy the Uptime Kuma package files
-cp -r /path/to/this/repo/cross/uptime-kuma cross/
-cp -r /path/to/this/repo/spk/uptime-kuma spk/
+cp -r /path/to/synology-uptime-kuma/cross/uptime-kuma cross/
+cp -r /path/to/synology-uptime-kuma/spk/uptime-kuma spk/
 
 # Build for a specific architecture
 cd spk/uptime-kuma

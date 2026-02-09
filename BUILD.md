@@ -50,16 +50,16 @@ git clone https://github.com/SynoCommunity/spksrc.git
 cd spksrc
 
 # Copy the Uptime Kuma package files into the spksrc tree
-cp -r /path/to/this/repo/cross/uptime-kuma cross/
-cp -r /path/to/this/repo/spk/uptime-kuma spk/
+cp -r /path/to/synology-uptime-kuma/cross/uptime-kuma cross/
+cp -r /path/to/synology-uptime-kuma/spk/uptime-kuma spk/
 ```
 
 Or use as an overlay (symlinks):
 
 ```bash
 cd /path/to/spksrc
-ln -s /path/to/this/repo/cross/uptime-kuma cross/uptime-kuma
-ln -s /path/to/this/repo/spk/uptime-kuma spk/uptime-kuma
+ln -s /path/to/synology-uptime-kuma/cross/uptime-kuma cross/uptime-kuma
+ln -s /path/to/synology-uptime-kuma/spk/uptime-kuma spk/uptime-kuma
 ```
 
 ### Building with Docker

@@ -23,8 +23,8 @@ Thank you for your interest in contributing to the Uptime Kuma SPK package for S
 1. Fork this repository on GitHub
 2. Clone your fork:
    ```bash
-   git clone https://github.com/<your-username>/uptime-kuma-spk.git
-   cd uptime-kuma-spk
+   git clone https://github.com/<your-username>/synology-uptime-kuma.git
+   cd synology-uptime-kuma
    ```
 3. Set up the spksrc build environment (see [BUILD.md](BUILD.md))
 4. Make your changes
